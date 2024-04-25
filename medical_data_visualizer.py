@@ -53,23 +53,30 @@ def draw_cat_plot():
 # Draw Heat Map
 def draw_heat_map():
     # Clean the data
-    df_heat = None
+    # height is less than the 2.5th percentile (Keep the correct data with (df['height'] >= df['height'].quantile(0.025)))
+    # height is more than the 97.5th percentile
+    # weight is less than the 2.5th percentile
+    # weight is more than the 97.5th percentile
+  
+    df_heat = df[(df['height'] >= df['height'].quantile(0.025)) & (df['height'] <= df['height'].quantile(0.975)) & (df['weight'] >= df['weight'].quantile(0.025)) & (df['weight'] <= df['weight'].quantile(0.975))]
 
     # Calculate the correlation matrix
-    corr = None
+    corr = df_heat.corr()
 
     # Generate a mask for the upper triangle
-    mask = None
-
+    mask = np.triu(corr)
 
 
     # Set up the matplotlib figure
-    fig, ax = None
+    fig, ax = plt.subplots(figsize=(16, 9))
 
     # Draw the heatmap with 'sns.heatmap()'
+    sns.heatmap(data=corr, mask=mask, annot=True, square=True, linewidths=1,  fmt="0.1f", cmap="icefire")
 
 
 
     # Do not modify the next two lines
     fig.savefig('heatmap.png')
     return fig
+
+draw_heat_map()
