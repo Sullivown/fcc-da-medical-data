@@ -18,7 +18,6 @@ def convert_to_zeros_ones(cell_data):
 df['cholesterol'] = df['cholesterol'].apply(convert_to_zeros_ones)
 df['gluc'] = df['gluc'].apply(convert_to_zeros_ones)
 
-
 # Draw Categorical Plot
 def draw_cat_plot():
     # Create DataFrame for cat plot using `pd.melt` using just the values from 'cholesterol', 'gluc', 'smoke', 'alco', 'active', and 'overweight'.
@@ -53,12 +52,13 @@ def draw_cat_plot():
 # Draw Heat Map
 def draw_heat_map():
     # Clean the data
+    # diastolic pressure is higher than systolic (Keep the correct data with (df['ap_lo'] <= df['ap_hi']))
     # height is less than the 2.5th percentile (Keep the correct data with (df['height'] >= df['height'].quantile(0.025)))
     # height is more than the 97.5th percentile
     # weight is less than the 2.5th percentile
     # weight is more than the 97.5th percentile
   
-    df_heat = df[(df['height'] >= df['height'].quantile(0.025)) & (df['height'] <= df['height'].quantile(0.975)) & (df['weight'] >= df['weight'].quantile(0.025)) & (df['weight'] <= df['weight'].quantile(0.975))]
+    df_heat = df[(df['ap_lo'] <= df['ap_hi']) & (df['height'] >= df['height'].quantile(0.025)) & (df['height'] <= df['height'].quantile(0.975)) & (df['weight'] >= df['weight'].quantile(0.025)) & (df['weight'] <= df['weight'].quantile(0.975))]
 
     # Calculate the correlation matrix
     corr = df_heat.corr()
@@ -71,7 +71,7 @@ def draw_heat_map():
     fig, ax = plt.subplots(figsize=(16, 9))
 
     # Draw the heatmap with 'sns.heatmap()'
-    sns.heatmap(data=corr, mask=mask, annot=True, square=True, linewidths=1,  fmt="0.1f", cmap="icefire")
+    sns.heatmap(data=corr, mask=mask, annot=True, square=True, linewidths=1,  fmt="0.1f")
 
 
 
